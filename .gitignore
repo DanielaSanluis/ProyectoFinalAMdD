@@ -1,0 +1,13 @@
+# Ignorar la base de datos masiva (Requisito de rúbrica)
+data/
+
+# Entornos virtuales y caché de Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.virtualenv/
+venv/
+env/
+
+# Archivos del sistema
+.DS_Store
