@@ -119,18 +119,18 @@ if __name__ == "__main__":
 
 
     if analyzer.load_data() is not None:
-        # #Informacion general
+        # # 1.Informacion general
         # info = analyzer.get_general_info()
         # print(f"\nDimensiones: {info['filas']} filas x {info['columnas']} columnas")
         # print("\nTipos de datos por columna:")
         # print(info['tipos_datos'])
 
-        # # Calidad de Datos
+        # # 2. Calidad de Datos
         # print(f"\n--- Top 10 columnas con más nulos reales ---")
         # quality_report = analyzer.analyze_data_quality()
         # print(quality_report.head(10))
         
-        #EStadisticas descriptivas
+        # 3. Estadisticas descriptivas
         print(f"\n--- Variable Numérica: EDAD ---")
         edad_stats = analyzer.analyze_numeric_stats('EDAD')
         print(edad_stats.to_string(index=False))
