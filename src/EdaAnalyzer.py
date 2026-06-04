@@ -111,7 +111,68 @@ class EdaAnalyzer:
                     })
                     
         return pd.DataFrame(resultados)
+    
 
+    #Graficas
+    def plot_age_distribution(self):
+        """Genera el histograma y boxplot de la columna EDAD."""
+        import numpy as np
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+
+        if self.df is None or 'EDAD' not in self.df.columns:
+            print("Error: Dataset no cargado o columna EDAD ausente.")
+            return
+
+        # Configuración estética
+        sns.set_theme(style="whitegrid")
+        fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+
+        # Limpieza interna
+        edad_limpia = self.df['EDAD'].replace(999, np.nan).dropna()
+
+        # Gráfica 1: Histograma
+        sns.histplot(edad_limpia, bins=30, kde=True, color="skyblue", ax=axes[0])
+        axes[0].set_title("Distribución General de la Edad", fontsize=14, pad=10)
+        axes[0].set_xlabel("Edad (Años)", fontsize=12)
+        axes[0].set_ylabel("Cantidad de Registros", fontsize=12)
+
+        # Gráfica 2: Boxplot
+        sns.boxplot(x=edad_limpia, color="lightcoral", ax=axes[1])
+        axes[1].set_title("Detección de Valores Atípicos en la Edad", fontsize=14, pad=10)
+        axes[1].set_xlabel("Edad (Años)", fontsize=12)
+
+        plt.tight_layout()
+        return fig # Retornamos la figura para que el notebook la renderice
+
+    def calculate_age_outliers_iqr(self) -> dict:
+        """Calcula matemáticamente los valores atípicos de la EDAD usando la regla IQR."""
+        if self.df is None or 'EDAD' not in self.df.columns:
+            return None
+            
+        # Limpieza básica inicial
+        edad_serie = self.df['EDAD'].replace(999, np.nan).dropna()
+        
+        # Calculamos los cuartiles 1 y 3
+        q1 = edad_serie.quantile(0.25)
+        q3 = edad_serie.quantile(0.75)
+        iqr = q3 - q1
+        
+        # Regla IQR: Límite superior es Q3 + 1.5 * IQR
+        limite_superior = q3 + (1.5 * iqr)
+        limite_inferior = q1 - (1.5 * iqr)
+        
+        # Pacientes que superan el límite superior
+        atipicos = edad_serie[edad_serie > limite_superior]
+        
+        return {
+            'Q1': q1,
+            'Q3': q3,
+            'IQR': iqr,
+            'Limite_Superior_IQR': limite_superior,
+            'Cantidad_Atipicos': len(atipicos),
+            'Porcentaje_Atipicos': (len(atipicos) / len(edad_serie)) * 100
+        }
 if __name__ == "__main__":
     ruta_dataset = "../data/COVID19MEXICO.csv" 
     
