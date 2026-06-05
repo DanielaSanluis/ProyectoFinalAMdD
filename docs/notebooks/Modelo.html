@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Daniela Alejandra Sanluis Castillo">
 
-<title>Modelo Supervisado – Minería de Datos - Ciencias UNAM</title>
+<title>Fase 2: Modelado Supervisado – Minería de Datos - Ciencias UNAM</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -167,14 +168,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Modelo Supervisado</h1>
+<h1 class="title">Fase 2: Modelado Supervisado</h1>
+<p class="subtitle lead">Proyecto Final - Almacenes y Minería de Datos</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Daniela Alejandra Sanluis Castillo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Fecha de publicación</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">3 de junio de 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -184,14 +198,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>El <strong>Modelado Supervisado</strong> es una tarea de la minería de datos que consiste en entrenar un algoritmo matemático a partir de un conjunto de datos etiquetado históricamente[cite: 56, 59]. En este proyecto, el dataset original fue transformado y filtrado para delimitar el universo de análisis, permitiendo al algoritmo mapear una matriz de características de entrada, como variables demográficas y comorbilidades clínicas.</p>
+<p>El <strong>Modelado Supervisado</strong> es una tarea de la minería de datos que consiste en entrenar un algoritmo matemático a partir de un conjunto de datos etiquetado históricamente. En este proyecto, el dataset original fue transformado y filtrado para delimitar el universo de análisis, permitiendo al algoritmo mapear una matriz de características de entrada, como variables demográficas y comorbilidades clínicas.</p>
 <p>Para este proyecto utilizamos un modelo llamado <strong>Bosque Aleatorio</strong>. En lugar de confiar en la decisión de un solo algoritmo matemático, este método simula un “comité de expertos”.</p>
 <ol type="1">
 <li>El sistema crea cientos de pequeños “árboles de decisión” independientes. Cada árbol analiza una parte diferente de los datos de salud y da su propio veredicto.</li>
 <li>Cuando llega un paciente nuevo al hospital, todos los árboles votan en conjunto.</li>
 <li>La decisión mayoritaria del bosque determina la predicción final.</li>
 </ol>
-<div id="30fe07dd" class="cell" data-execution_count="2">
+<div id="30fe07dd" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Mostrar Código Python</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
@@ -238,7 +252,11 @@ Modelo serializado y guardado exitosamente en: ../models/random_forest_model.job
 <section id="interpretación-de-los-resultados-del-modelo-supervisado" class="level3">
 <h3 class="anchored" data-anchor-id="interpretación-de-los-resultados-del-modelo-supervisado">Interpretación de los Resultados del Modelo Supervisado</h3>
 <p>El clasificador predictivo basado en el algoritmo Random Forest fue entrenado con éxito utilizando el 70% de la base de datos, reservando el 30% restante para verificar la precisión de sus respuestas de manera justa. El modelo utiliza cinco características del paciente (su edad, género biológico y antecedentes de diabetes, hipertensión y obesidad) para predecir si requerirá quedarse internado en una unidad hospitalaria.</p>
-<p>Al analizar las métricas de evaluación obtenidas, se determinó lo siguiente: 1. <strong>Rendimiento Predictivo:</strong> El clasificador alcanzó un Accuracy y un F1-Score promedio superiores al 81%. Esto demuestra una excelente capacidad del algoritmo para discernir qué pacientes se encuentran en una situación de vulnerabilidad clínica inmediata a partir de sus datos de ingreso en el triaje. 2. <strong>Comparación con la Línea Base:</strong> Nuestro modelo supera de forma contundente al clasificador trivial (línea base mayoritaria), el cual registra una precisión basal de apenas el 52.3%. Al incrementar el rendimiento en casi 30 puntos porcentuales, se comprueba matemáticamente el valor predictivo de los patrones y combinaciones de comorbilidades que el modelo aprendió durante su entrenamiento.</p>
+<p>Al analizar las métricas de evaluación obtenidas, se determinó lo siguiente:</p>
+<ol type="1">
+<li><strong>Rendimiento Predictivo:</strong> El clasificador alcanzó un Accuracy y un F1-Score promedio superiores al 81%. Esto demuestra una excelente capacidad del algoritmo para discernir qué pacientes se encuentran en una situación de vulnerabilidad clínica inmediata a partir de sus datos de ingreso en el triaje.</li>
+<li><strong>Comparación con la Línea Base:</strong> Nuestro modelo supera de forma contundente al clasificador trivial (línea base mayoritaria), el cual registra una precisión basal de apenas el 52.3%. Al incrementar el rendimiento en casi 30 puntos porcentuales, se comprueba matemáticamente el valor predictivo de los patrones y combinaciones de comorbilidades que el modelo aprendió durante su entrenamiento.</li>
+</ol>
 <p>Finalmente, el estado interno del clasificador fue serializado de manera exitosa en la carpeta local <code>models/</code>. Este archivo permitirá reutilizar la inteligencia del modelo de forma independiente en una demostración separada, permitiendo realizar predicciones en tiempo real sobre nuevos pacientes sin necesidad de repetir el largo proceso de entrenamiento.</p>
 
 

@@ -21,12 +21,11 @@ class ModelTrainer:
         # Leer el dataset de forma segura
         self.df = pd.read_csv(self.file_path, encoding='latin-1')
         
-        # 1. Definición de variables de entrada (Features) y Objetivo (Target)
-        # Filtramos para usar las comorbilidades y datos demográficos clave
+        # 1. Definición de variables de entrada y Objetivo.
         features = ['EDAD', 'SEXO', 'DIABETES', 'HIPERTENSION', 'OBESIDAD']
         target = 'TIPO_PACIENTE'
         
-        # 2. Limpieza de nulos ocultos (códigos 97, 98, 99, 999) en este bloque
+        # 2. Limpieza de nulos ocultos (códigos 97, 98, 99, 999)
         df_clean = self.df[features + [target]].copy()
         for col in features:
             if col != 'EDAD':
@@ -34,14 +33,12 @@ class ModelTrainer:
         df_clean['EDAD'] = df_clean['EDAD'].replace(999, np.nan)
         df_clean[target] = df_clean[target].replace([97, 98, 99], np.nan)
         
-        # Imputación simple por la moda/mediana y eliminación de nulos en el target
         df_clean = df_clean.dropna(subset=[target])
         df_clean['EDAD'] = df_clean['EDAD'].fillna(df_clean['EDAD'].median())
         for col in ['SEXO', 'DIABETES', 'HIPERTENSION', 'OBESIDAD']:
             df_clean[col] = df_clean[col].fillna(df_clean[col].mode()[0])
             
         # 3. Transformación: Mapear target a binario estandarizado (0: Ambulatorio, 1: Hospitalizado)
-        # Original: 1 es Ambulatorio, 2 es Hospitalizado
         df_clean[target] = df_clean[target].map({1: 0, 2: 1})
         
         self.X = df_clean[features]
@@ -49,7 +46,7 @@ class ModelTrainer:
 
     def split_data(self, test_size: float = 0.3):
         """Divide los datos en conjuntos de entrenamiento y prueba."""
-        # División obligatoria con semilla fija para reproducibilidad
+        # División obligatoria para reproducibilidad
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
             self.X, self.y, test_size=test_size, random_state=self.seed, stratify=self.y
         )
@@ -74,7 +71,7 @@ class ModelTrainer:
             
         preds = self.model.predict(self.X_test)
         
-        # Cálculo de la línea base trivial (Clasificador mayoritario)
+        # Cálculo de la línea base trivial
         clase_mayoritaria = self.y_train.mode()[0]
         preds_linea_base = np.full_like(self.y_test, fill_value=clase_mayoritaria)
         accuracy_base = accuracy_score(self.y_test, preds_linea_base)

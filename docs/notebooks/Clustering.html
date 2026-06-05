@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Daniela Alejandra Sanluis Castillo">
 
-<title>Agrupamiento (Clustering) – Minería de Datos - Ciencias UNAM</title>
+<title>Fase 3: Agrupamiento (Clustering) – Minería de Datos - Ciencias UNAM</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -197,14 +198,27 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Agrupamiento (Clustering)</h1>
+<h1 class="title">Fase 3: Agrupamiento (Clustering)</h1>
+<p class="subtitle lead">Proyecto Final - Almacenes y Minería de Datos</p>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Daniela Alejandra Sanluis Castillo </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Fecha de publicación</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">3 de junio de 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -218,7 +232,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="paso-1-selección-de-variables-preprocesamiento-y-método-del-codo">Paso 1: Selección de Variables, Preprocesamiento y Método del Codo</h3>
 <p>Como el algoritmo K-Means mide la distancia geométrica entre los puntos, fue obligatorio aplicar una estandarización (<code>StandardScaler</code>). Esto equilibra los datos para que la escala de los años en la edad no aplaste ni domine por completo a las variables de las enfermedades. Luego, se calculó la “inercia” (qué tan separados quedan los grupos por dentro) probando desde 1 hasta 6 grupos posibles.</p>
 <p><strong>Variables analizadas:</strong> * <code>EDAD</code> (Escala numérica continua). * <code>DIABETES</code>, <code>HIPERTENSION</code>, <code>OBESIDAD</code> (Variables categóricas transformadas a valores numéricos de <span class="math inline">\(1 = \text{SÍ}\)</span> y <span class="math inline">\(0 = \text{NO}\)</span>).</p>
-<div id="d9a1783c" class="cell">
+<div id="d9a1783c" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Mostrar Código Python</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
@@ -243,13 +257,20 @@ window.Quarto = {
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Clustering_files/figure-html/cell-2-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
 </div>
 <p>La gráfica morada muestra con total claridad cómo va cayendo la línea a medida que aumentamos el número de grupos. El quiebre o “codo” más importante de la estructura ocurre exactamente en <strong><span class="math inline">\(K = 3\)</span></strong>. A partir de ahí, la curva se aplana y añadir más grupos no aporta un beneficio matemático real. Esto justifica científicamente que dividir la población en 3 perfiles es la decisión más óptima y estable.</p>
 </section>
 <section id="paso-2-análisis-estadístico-e-interpretación-de-los-clústeres-reales" class="level3">
 <h3 class="anchored" data-anchor-id="paso-2-análisis-estadístico-e-interpretación-de-los-clústeres-reales">Paso 2: Análisis Estadístico e Interpretación de los Clústeres Reales</h3>
 <p>Se entrenó el algoritmo K-Means fijando el modelo en 3 clústeres y usando una semilla fija (<code>random_state=42</code>) para asegurar que el experimento sea <span class="math inline">\(100\%\)</span> reproducible en Fedora. Al terminar, el algoritmo etiquetó a cada paciente en su grupo correspondiente y se calcularon los promedios reales de cada variable para entender las características de cada sector descubierto.</p>
-<div id="0ad9b73d" class="cell">
+<div id="0ad9b73d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Mostrar Código Python</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Entrenamos el modelo con K=3 clústeres según la justificación visual</span></span>
@@ -259,6 +280,15 @@ window.Quarto = {
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">================ TABLA DE PERFILES POR CLÚSTER ================"</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla_perfiles.<span class="bu">round</span>(<span class="dv">3</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+================ TABLA DE PERFILES POR CLÚSTER ================
+           EDAD  DIABETES  HIPERTENSION  OBESIDAD  Tamaño_Grupo
+CLUSTER                                                        
+0        64.017     0.626         0.752       0.0         38469
+1        27.180     0.001         0.001       0.0        169223
+2        50.642     0.335         0.420       1.0         14687</code></pre>
+</div>
 </div>
 <p><strong>Interpretación de los 3 clusters:</strong></p>
 <ul>

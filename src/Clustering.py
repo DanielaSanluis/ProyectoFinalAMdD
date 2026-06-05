@@ -25,11 +25,9 @@ class Clustering:
             df_clean[col] = df_clean[col].replace([97, 98, 99], np.nan)
         df_clean['EDAD'] = df_clean['EDAD'].replace(999, np.nan)
         
-        # Imputación simple por consistencia
         df_clean['EDAD'] = df_clean['EDAD'].fillna(df_clean['EDAD'].median())
         for col in ['DIABETES', 'HIPERTENSION', 'OBESIDAD']:
             df_clean[col] = df_clean[col].fillna(df_clean[col].mode()[0])
-            # Recodificación binaria idéntica (SÍ = 1, NO = 0) para que la distancia tenga sentido
             df_clean[col] = df_clean[col].map({1: 1, 2: 0})
             
         self.data_clean = df_clean
@@ -37,7 +35,7 @@ class Clustering:
         self.features_scaled = self.scaler.fit_transform(df_clean)
 
     def calculate_elbow(self, max_k: int = 8) -> list:
-        """Calcula la inercia (Suma de cuadrados internos) para valores de K."""
+        """Calcula la inercia para valores de K."""
         inercias = []
         ks = range(1, max_k + 1)
         for k in ks:
@@ -47,13 +45,13 @@ class Clustering:
         return inercias
 
     def train_kmeans(self, n_clusters: int):
-        """Entrena el modelo definitivo con el número de clústeres óptimo."""
+        """Entrena el modelo definitivo."""
         self.kmeans_model = KMeans(n_clusters=n_clusters, random_state=self.seed, n_init=10)
         self.data_clean['CLUSTER'] = self.kmeans_model.fit_predict(self.features_scaled)
         return self.data_clean
 
     def get_profiles(self) -> pd.DataFrame:
-        """Calcula las estadísticas promedio de las variables originales por clúster."""
+        """Calcula las estadísticas promedio."""
         # Agrupamos por clúster y promediamos para ver el porcentaje de presencia de la enfermedad
         perfiles = self.data_clean.groupby('CLUSTER').mean()
         perfiles['Tamaño_Grupo'] = self.data_clean.groupby('CLUSTER').size()

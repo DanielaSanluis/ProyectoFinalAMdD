@@ -72,7 +72,7 @@ class EdaAnalyzer:
         if self.df is None or column_name not in self.df.columns:
             return None
         
-        # Reemplazamos nulo de edad (999) por si acaso para no sesgar
+        # Reemplazamos nulo de edad (999)
         serie_num = self.df[column_name].replace(999, np.nan).dropna()
         
         desc = serie_num.describe()
@@ -85,7 +85,7 @@ class EdaAnalyzer:
         return reporte_num
 
     def analyze_categorical_stats(self, columns_list: list) -> pd.DataFrame:
-        """Calcula las frecuencias absolutas, porcentajes y la moda para variables categóricas limpias."""
+        """Calcula las frecuencias absolutas, porcentajes y la moda."""
         if self.df is None:
             return None
             
@@ -146,7 +146,7 @@ class EdaAnalyzer:
         return fig # Retornamos la figura para que el notebook la renderice
 
     def calculate_age_outliers_iqr(self) -> dict:
-        """Calcula matemáticamente los valores atípicos de la EDAD usando la regla IQR."""
+        """Calcula los valores atípicos de la EDAD usando IQR."""
         if self.df is None or 'EDAD' not in self.df.columns:
             return None
             
@@ -184,22 +184,19 @@ class EdaAnalyzer:
             print("Error: Dataset no cargado.")
             return
 
-        # Seleccionamos las columnas más importantes para analizar sus relaciones
         columnas_interes = [
             'EDAD', 'SEXO', 'TIPO_PACIENTE', 'DIABETES', 
             'HIPERTENSION', 'OBESIDAD', 'INTUBADO', 'UCI'
         ]
         
-        # Filtramos para quedarnos solo con las columnas que existan en tu archivo
         cols_validas = [c for c in columnas_interes if c in self.df.columns]
         
-        # Creamos una copia y limpiamos los nulos ocultos (97, 98, 99) para que no alteren la matemática
         df_corr = self.df[cols_validas].copy()
         for col in cols_validas:
             if col != 'EDAD':
                 df_corr[col] = df_corr[col].replace([97, 98, 99], np.nan)
         
-        # Calculamos la matriz usando Spearman (ideal para variables mixtas y categóricas ordenadas)
+        # Calcula la matriz usando Spearman
         matriz_corr = df_corr.corr(method='spearman')
 
         # Configuración de la gráfica
@@ -209,12 +206,12 @@ class EdaAnalyzer:
         # Dibujamos el Heatmap
         sns.heatmap(
             matriz_corr, 
-            annot=True,          # Pone los números dentro de cada cuadro
-            fmt=".2f",           # Limita a 2 decimales
-            cmap="coolwarm",     # Color azul para negativo, rojo para positivo
-            vmin=-1, vmax=1,     # Límites de la correlación
-            square=True,         # Hace los cuadros perfectamente cuadrados
-            linewidths=0.5,      # Línea delgada de separación
+            annot=True,          
+            fmt=".2f",           
+            cmap="coolwarm",     
+            vmin=-1, vmax=1,     
+            square=True,         
+            linewidths=0.5,      
             cbar_kws={"shrink": .8},
             ax=ax
         )
@@ -234,15 +231,13 @@ class EdaAnalyzer:
             print("Error: Dataset no cargado.")
             return
 
-        # Variables categóricas clave a graficar
+        # Variables categóricas
         variables = ['SEXO', 'DIABETES', 'HIPERTENSION', 'TIPO_PACIENTE']
         
-        # Configuramos una cuadrícula de 2 filas y 2 columnas para las gráficas
         sns.set_theme(style="whitegrid")
         fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-        axes = axes.flatten() # Aplana la matriz de ejes para iterar fácilmente
+        axes = axes.flatten() 
 
-        # Diccionarios para cambiar los códigos numéricos por etiquetas claras en las gráficas
         labels_map = {
             'SEXO': {1: 'Mujer', 2: 'Hombre'},
             'DIABETES': {1: 'SÍ', 2: 'NO'},
@@ -252,14 +247,11 @@ class EdaAnalyzer:
 
         for i, col in enumerate(variables):
             if col in self.df.columns:
-                # Limpiamos nulos ocultos temporalmente para la gráfica
                 serie_clean = self.df[col].replace([97, 98, 99], np.nan).dropna()
                 
-                # Mapeamos los números a texto (ej. 1 -> Mujer)
                 if col in labels_map:
                     serie_clean = serie_clean.map(labels_map[col])
 
-                # Dibujamos la gráfica de barras de conteo (frecuencias)
                 sns.countplot(
                     x=serie_clean, 
                     ax=axes[i], 
@@ -273,7 +265,6 @@ class EdaAnalyzer:
                 axes[i].set_xlabel("")
                 axes[i].set_ylabel("Número de Casos")
                 
-                # Truco para poner el número de conteo encima de cada barra
                 for container in axes[i].containers:
                     axes[i].bar_label(container, fmt='%d', label_type='edge', padding=3)
 
@@ -302,9 +293,7 @@ if __name__ == "__main__":
         print(f"\n--- Variable Numérica: EDAD ---")
         edad_stats = analyzer.analyze_numeric_stats('EDAD')
         print(edad_stats.to_string(index=False))
-
         print(f"\n--- Variables Categóricas Clave ---")
-        # Analizamos una muestra de variables para comprobar las modas
         cat_cols = ['SEXO', 'TIPO_PACIENTE', 'DIABETES', 'HIPERTENSION', 'OBESIDAD']
         categorical_stats = analyzer.analyze_categorical_stats(cat_cols)
         print(categorical_stats.to_string(index=False))
