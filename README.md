@@ -2,6 +2,8 @@
 
 * **Documentación Interactiva (GitHub Pages):** [https://danielasanluis.github.io/ProyectoFinalAMdD/]
 
+NOTA: El dataset no se subio, pero el link se encuentra en el reporte (pdf).
+
 ## Instrucciones de Instalación y Ejecución
 
 Este proyecto está desarrollado modularmente en Python utilizando un entorno de programación orientada a objetos (POO) y documentado de forma interactiva con Quarto. Sigue estos pasos en tu terminal de Linux para replicar el entorno localmente.
