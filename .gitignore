@@ -11,3 +11,6 @@ env/
 
 # Archivos del sistema
 .DS_Store
+
+/.quarto/
+**/*.quarto_ipynb

@@ -1,18 +1,26 @@
 project:
   type: website
-  output-dir: docs  # Obligatorio por la rúbrica para subirlo a GitHub Pages
+  output-dir: docs
 
 website:
-  title: "Minería de Datos - Proyecto Final"
+  title: "Minería de Datos - Ciencias UNAM"
   navbar:
     background: primary
     left:
-      - href: notebooks/01_EDA.ipynb
-        text: "1. Análisis Exploratorio (EDA)"
+      - text: "Inicio"
+        href: index.qmd
+      - text: "1. EDA"
+        href: notebooks/EDA.ipynb
+      - text: "2. Modelo Supervisado"
+        href: notebooks/Modelo.ipynb
+      - text: "3. Clustering"
+        href: notebooks/Clustering.ipynb
 
 format:
   html:
     theme: cosmo
-    toc: true          # Genera una tabla de contenidos automática a la derecha
-    code-fold: true    # Permite a la profesora ocultar/mostrar tu código de Python
-    code-tools: true   # Agrega herramientas para ver el código fuente
+    toc: true
+    toc-title: "Contenido de la Sección"
+    code-fold: true
+    code-summary: "Mostrar Código Python"
+    lang: es

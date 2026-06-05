@@ -1,0 +1,11 @@
+---
+title: "Proyecto Final: Minería de Datos en Salud Pública"
+author: "Daniela Alejandra Sanluis Castillo"
+date: "2026-06-05"
+lang: es
+---
+
+# ¡Bienvenidos al portal interactivo del proyecto!
+Este espacio ha sido diseñado para centralizar y desplegar de manera interactiva todo el ecosistema de software, análisis estadísticos y modelos predictivos desarrollados para la materia de **Almacenes y minería de datos** de la Facultad de Ciencias, UNAM.
+
+A través de la barra de navegación superior, podrás explorar de forma dinámica las tres grandes fases de nuestra investigación epidemiológica aplicadas sobre los registros oficiales de la Secretaría de Salud
