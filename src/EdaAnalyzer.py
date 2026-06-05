@@ -173,6 +173,113 @@ class EdaAnalyzer:
             'Cantidad_Atipicos': len(atipicos),
             'Porcentaje_Atipicos': (len(atipicos) / len(edad_serie)) * 100
         }
+    
+    def plot_correlation_matrix(self):
+        """Genera una matriz de correlación de Spearman y la muestra mediante un Heatmap."""
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        import numpy as np
+
+        if self.df is None:
+            print("Error: Dataset no cargado.")
+            return
+
+        # Seleccionamos las columnas más importantes para analizar sus relaciones
+        columnas_interes = [
+            'EDAD', 'SEXO', 'TIPO_PACIENTE', 'DIABETES', 
+            'HIPERTENSION', 'OBESIDAD', 'INTUBADO', 'UCI'
+        ]
+        
+        # Filtramos para quedarnos solo con las columnas que existan en tu archivo
+        cols_validas = [c for c in columnas_interes if c in self.df.columns]
+        
+        # Creamos una copia y limpiamos los nulos ocultos (97, 98, 99) para que no alteren la matemática
+        df_corr = self.df[cols_validas].copy()
+        for col in cols_validas:
+            if col != 'EDAD':
+                df_corr[col] = df_corr[col].replace([97, 98, 99], np.nan)
+        
+        # Calculamos la matriz usando Spearman (ideal para variables mixtas y categóricas ordenadas)
+        matriz_corr = df_corr.corr(method='spearman')
+
+        # Configuración de la gráfica
+        sns.set_theme(style="white")
+        fig, ax = plt.subplots(figsize=(10, 8))
+
+        # Dibujamos el Heatmap
+        sns.heatmap(
+            matriz_corr, 
+            annot=True,          # Pone los números dentro de cada cuadro
+            fmt=".2f",           # Limita a 2 decimales
+            cmap="coolwarm",     # Color azul para negativo, rojo para positivo
+            vmin=-1, vmax=1,     # Límites de la correlación
+            square=True,         # Hace los cuadros perfectamente cuadrados
+            linewidths=0.5,      # Línea delgada de separación
+            cbar_kws={"shrink": .8},
+            ax=ax
+        )
+        
+        ax.set_title("Matriz de Correlación entre Factores Clínicos y Demográficos", fontsize=14, pad=15)
+        plt.tight_layout()
+        
+        return fig
+    
+    def plot_categorical_distributions(self):
+        """Genera gráficas de barras para evaluar las frecuencias y el balance de clases."""
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        import numpy as np
+
+        if self.df is None:
+            print("Error: Dataset no cargado.")
+            return
+
+        # Variables categóricas clave a graficar
+        variables = ['SEXO', 'DIABETES', 'HIPERTENSION', 'TIPO_PACIENTE']
+        
+        # Configuramos una cuadrícula de 2 filas y 2 columnas para las gráficas
+        sns.set_theme(style="whitegrid")
+        fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+        axes = axes.flatten() # Aplana la matriz de ejes para iterar fácilmente
+
+        # Diccionarios para cambiar los códigos numéricos por etiquetas claras en las gráficas
+        labels_map = {
+            'SEXO': {1: 'Mujer', 2: 'Hombre'},
+            'DIABETES': {1: 'SÍ', 2: 'NO'},
+            'HIPERTENSION': {1: 'SÍ', 2: 'NO'},
+            'TIPO_PACIENTE': {1: 'Ambulatorio', 2: 'Hospitalizado'}
+        }
+
+        for i, col in enumerate(variables):
+            if col in self.df.columns:
+                # Limpiamos nulos ocultos temporalmente para la gráfica
+                serie_clean = self.df[col].replace([97, 98, 99], np.nan).dropna()
+                
+                # Mapeamos los números a texto (ej. 1 -> Mujer)
+                if col in labels_map:
+                    serie_clean = serie_clean.map(labels_map[col])
+
+                # Dibujamos la gráfica de barras de conteo (frecuencias)
+                sns.countplot(
+                    x=serie_clean, 
+                    ax=axes[i], 
+                    palette="Blues_r", 
+                    hue=serie_clean, 
+                    legend=False
+                )
+                
+                # Añadimos títulos y etiquetas limpias
+                axes[i].set_title(f"Distribución de la Variable: {col}", fontsize=12, pad=10)
+                axes[i].set_xlabel("")
+                axes[i].set_ylabel("Número de Casos")
+                
+                # Truco para poner el número de conteo encima de cada barra
+                for container in axes[i].containers:
+                    axes[i].bar_label(container, fmt='%d', label_type='edge', padding=3)
+
+        plt.tight_layout()
+        return fig
+    
 if __name__ == "__main__":
     ruta_dataset = "../data/COVID19MEXICO.csv" 
     
